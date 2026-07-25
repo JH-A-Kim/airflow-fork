@@ -507,15 +507,17 @@ class DAGTagCollectionResponse(BaseModel):
     total_entries: Annotated[int, Field(title="Total Entries")]
 
 
-class DagProcessorInfoResponse(BaseModel):
+class DagProcessorInstanceInfoResponse(BaseModel):
     """
-    DagProcessor info serializer for responses.
+    Dag processor instance info serializer for responses.
     """
 
     status: Annotated[str | None, Field(title="Status")] = None
+    hostname: Annotated[str | None, Field(title="Hostname")] = None
     latest_dag_processor_heartbeat: Annotated[str | None, Field(title="Latest Dag Processor Heartbeat")] = (
         None
     )
+    bundle_names: Annotated[list[str] | None, Field(title="Bundle Names")] = None
 
 
 class DagRunAssetReference(BaseModel):
@@ -796,6 +798,8 @@ class JobResponse(BaseModel):
     executor_class: Annotated[str | None, Field(title="Executor Class")] = None
     hostname: Annotated[str | None, Field(title="Hostname")] = None
     unixname: Annotated[str | None, Field(title="Unixname")] = None
+    team_name: Annotated[str | None, Field(title="Team Name")] = None
+    bundle_names: Annotated[list[str] | None, Field(title="Bundle Names")] = None
     dag_display_name: Annotated[str | None, Field(title="Dag Display Name")] = None
 
 
@@ -970,12 +974,13 @@ class ReprocessBehavior(str, Enum):
     NONE = "none"
 
 
-class SchedulerInfoResponse(BaseModel):
+class SchedulerInstanceInfoResponse(BaseModel):
     """
-    Scheduler info serializer for responses.
+    Scheduler instance info serializer for responses.
     """
 
     status: Annotated[str | None, Field(title="Status")] = None
+    hostname: Annotated[str | None, Field(title="Hostname")] = None
     latest_scheduler_heartbeat: Annotated[str | None, Field(title="Latest Scheduler Heartbeat")] = None
 
 
@@ -1182,13 +1187,15 @@ class TriggerResponse(BaseModel):
     triggerer_id: Annotated[int | None, Field(title="Triggerer Id")] = None
 
 
-class TriggererInfoResponse(BaseModel):
+class TriggererInstanceInfoResponse(BaseModel):
     """
-    Triggerer info serializer for responses.
+    Triggerer instance info serializer for responses.
     """
 
     status: Annotated[str | None, Field(title="Status")] = None
+    hostname: Annotated[str | None, Field(title="Hostname")] = None
     latest_triggerer_heartbeat: Annotated[str | None, Field(title="Latest Triggerer Heartbeat")] = None
+    team_name: Annotated[str | None, Field(title="Team Name")] = None
 
 
 class UpdateHITLDetailPayload(BaseModel):
@@ -1919,6 +1926,19 @@ class DAGWarningResponse(BaseModel):
     dag_display_name: Annotated[str, Field(title="Dag Display Name")]
 
 
+class DagProcessorInfoResponse(BaseModel):
+    """
+    DagProcessor info serializer for responses.
+    """
+
+    status: Annotated[str | None, Field(title="Status")] = None
+    latest_dag_processor_heartbeat: Annotated[str | None, Field(title="Latest Dag Processor Heartbeat")] = (
+        None
+    )
+    detailed_status: Annotated[str | None, Field(title="Detailed Status")] = None
+    instances: Annotated[list[DagProcessorInstanceInfoResponse] | None, Field(title="Instances")] = None
+
+
 class DagStatsResponse(BaseModel):
     """
     Dag Stats serializer for responses.
@@ -1960,17 +1980,6 @@ class HITLDetailResponse(BaseModel):
 
 class HTTPValidationError(BaseModel):
     detail: Annotated[list[ValidationError] | None, Field(title="Detail")] = None
-
-
-class HealthInfoResponse(BaseModel):
-    """
-    Health serializer for responses.
-    """
-
-    metadatabase: BaseInfoResponse
-    scheduler: SchedulerInfoResponse
-    triggerer: TriggererInfoResponse
-    dag_processor: DagProcessorInfoResponse | None = None
 
 
 class ImportErrorCollectionResponse(BaseModel):
@@ -2071,6 +2080,17 @@ class QueuedEventCollectionResponse(BaseModel):
 
     queued_events: Annotated[list[QueuedEventResponse], Field(title="Queued Events")]
     total_entries: Annotated[int, Field(title="Total Entries")]
+
+
+class SchedulerInfoResponse(BaseModel):
+    """
+    Scheduler info serializer for responses.
+    """
+
+    status: Annotated[str | None, Field(title="Status")] = None
+    latest_scheduler_heartbeat: Annotated[str | None, Field(title="Latest Scheduler Heartbeat")] = None
+    detailed_status: Annotated[str | None, Field(title="Detailed Status")] = None
+    instances: Annotated[list[SchedulerInstanceInfoResponse] | None, Field(title="Instances")] = None
 
 
 class TaskDependencyCollectionResponse(BaseModel):
@@ -2199,6 +2219,17 @@ class TaskStateStoreCollectionResponse(BaseModel):
 
     task_state_store: Annotated[list[TaskStateStoreResponse], Field(title="Task State Store")]
     total_entries: Annotated[int, Field(title="Total Entries")]
+
+
+class TriggererInfoResponse(BaseModel):
+    """
+    Triggerer info serializer for responses.
+    """
+
+    status: Annotated[str | None, Field(title="Status")] = None
+    latest_triggerer_heartbeat: Annotated[str | None, Field(title="Latest Triggerer Heartbeat")] = None
+    detailed_status: Annotated[str | None, Field(title="Detailed Status")] = None
+    instances: Annotated[list[TriggererInstanceInfoResponse] | None, Field(title="Instances")] = None
 
 
 class VariableCollectionResponse(BaseModel):
@@ -2457,6 +2488,17 @@ class HITLDetailHistory(BaseModel):
     params_input: Annotated[dict[str, Any] | None, Field(title="Params Input")] = None
     response_received: Annotated[bool | None, Field(title="Response Received")] = False
     task_instance: TaskInstanceHistoryResponse
+
+
+class HealthInfoResponse(BaseModel):
+    """
+    Health serializer for responses.
+    """
+
+    metadatabase: BaseInfoResponse
+    scheduler: SchedulerInfoResponse
+    triggerer: TriggererInfoResponse
+    dag_processor: DagProcessorInfoResponse | None = None
 
 
 class PluginCollectionResponse(BaseModel):

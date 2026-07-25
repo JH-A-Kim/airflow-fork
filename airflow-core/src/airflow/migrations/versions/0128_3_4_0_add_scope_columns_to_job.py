@@ -20,7 +20,7 @@
 Add team_name and bundle_names scope columns to job table.
 
 Revision ID: f8c2a1d94e03
-Revises: 5a5d3253e946
+Revises: 7a98f1b7dbd3
 Create Date: 2026-07-08 02:00:00.000000
 
 """
